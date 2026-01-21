@@ -55,4 +55,38 @@ public class EstudianteService {
     public void deleteEstudiante(Long id) {
         this.estudianteRepository.deleteById(id);
     }
+
+    public List<Estudiante> buscarPorProvincia(String provincia) {
+        return this.estudianteRepository.find("provincia = ?1", provincia).list();
+    }
+
+    public List<Estudiante> buscarPorGeneroYProvincia(String genero, String provincia) {
+        return this.estudianteRepository.find("genero = ?1 and provincia = ?2", genero, provincia).list();
+    }
+
+    // 4 ejemplos mas complejos de consultas se dejan como ejercicio
+
+    // buscar nombre apellido
+    public List<Estudiante> buscarPorNombreYApellido(String nombre, String apellido) {
+        return this.estudianteRepository.find("nombre = ?1 and apellido = ?2", nombre, apellido).list();
+    }
+
+    // buscar nombre id
+    public List<Estudiante> buscarPorNombreEId(String nombre, Integer id) {
+        return this.estudianteRepository.find("nombre = ?1 and id = ?2", nombre, id.longValue()).list();
+    }
+
+    // nombre genero provincia
+    public List<Estudiante> buscarPorNombreGeneroYProvincia(String nombre, String genero, String provincia) {
+        return this.estudianteRepository
+                .find("nombre = ?1 and genero = ?2 and provincia = ?3", nombre, genero, provincia).list();
+    }
+    // nombre id provincia
+    public List<Estudiante> buscarPorNombreIdYProvincia(String nombre, Integer id, String provincia) {
+        return this.estudianteRepository
+                .find("nombre = ?1 and id = ?2 and provincia = ?3", nombre, id.longValue(), provincia).list();
+    }
+
+
+
 }
