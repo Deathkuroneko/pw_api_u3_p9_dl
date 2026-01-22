@@ -15,6 +15,7 @@ public class EstudianteService {
     private EstudianteRepository estudianteRepository;
 
     public List<Estudiante> ListarTodos() {
+        System.out.println("ListarTodos en el servicio");
         return this.estudianteRepository.listAll();
     }
 
@@ -57,14 +58,14 @@ public class EstudianteService {
     }
 
     public List<Estudiante> buscarPorProvincia(String provincia) {
+        System.out.println("Buscar por provincia en el servicio: " + provincia);
         return this.estudianteRepository.find("provincia = ?1", provincia).list();
     }
 
+    // buscar por genero y provincia
     public List<Estudiante> buscarPorGeneroYProvincia(String genero, String provincia) {
         return this.estudianteRepository.find("genero = ?1 and provincia = ?2", genero, provincia).list();
     }
-
-    // 4 ejemplos mas complejos de consultas se dejan como ejercicio
 
     // buscar nombre apellido
     public List<Estudiante> buscarPorNombreYApellido(String nombre, String apellido) {
