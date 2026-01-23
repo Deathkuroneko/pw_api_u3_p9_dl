@@ -10,9 +10,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import net.bytebuddy.asm.Advice.Return;
 import uce.edu.web.api.matricula.aplication.EstudianteService;
 import uce.edu.web.api.matricula.domain.Estudiante;
 
@@ -24,6 +25,7 @@ public class EstudianteResource {
 
     @GET
     @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Estudiante> ListarTodos() {
         return this.estudianteService.ListarTodos();
     }
@@ -31,6 +33,7 @@ public class EstudianteResource {
     /* LUEGO SE USARA EL MODELO DE MADURES DE RICHARSON */
     @GET
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_XML)
     public Estudiante consultarPorId(@PathParam("id") Integer ids) {
         return this.estudianteService.consultarPorId(ids);
     }
@@ -46,7 +49,7 @@ public class EstudianteResource {
     @Path("/{id}")
     public Response actualizar(@PathParam("id") Integer id, Estudiante estudiante) {
         this.estudianteService.actualizarEstudiante(id, estudiante);
-        return Response.status( 209).entity(estudiante).build();
+        return Response.status( 209).entity("Actualizado").build();
     }
 
     @PATCH
@@ -64,6 +67,7 @@ public class EstudianteResource {
     // para buscar usando querys
     @GET
     @Path("/provincia")
+    @Produces(MediaType.APPLICATION_JSON)
     //en caso de que haya chocque de path debe colocarse el diferenciador
     //y hay otra variable /provincia/genero y así.
     public List<Estudiante> buscarPorProvincia(@QueryParam("provincia") String provincia) {
@@ -162,6 +166,8 @@ Nivel 2:- uso correcto de metodos o verbos HTTP
         URL DE COD DE ESTADO: https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Status 
         - Uso de media Types correcto (el tipo de contenido que viaja en el body del request o response) haciendo un eso explicito del formato
         para prevenir ambiguedades en caso de que el cliente y el servidor puedan manejar multiples formatos
+            Consume: notacion para consumir
+            Produce: notacion para producir
             application/json: para datos en formato JSON
             application/xml: para datos en formato XML
             text/plain: para datos en formato texto plano
