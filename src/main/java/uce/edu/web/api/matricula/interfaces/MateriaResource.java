@@ -3,6 +3,7 @@ package uce.edu.web.api.matricula.interfaces;
 import java.util.List;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
@@ -38,6 +39,7 @@ public class MateriaResource {
 
     @POST
     @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response crear(Materia materia) {
         materiaService.crearMateria(materia);
         return Response.status(Response.Status.CREATED).entity(materia).build();

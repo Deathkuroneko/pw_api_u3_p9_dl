@@ -1,10 +1,13 @@
 package uce.edu.web.api.matricula.aplication;
-
+import java.util.ArrayList;
 import java.util.List;
+
+import com.arjuna.ats.internal.jdbc.drivers.modifiers.list;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import uce.edu.web.api.matricula.aplication.representation.EstudianteRepresentation;
 import uce.edu.web.api.matricula.domain.Estudiante;
 import uce.edu.web.api.matricula.infraestructura.EstudianteRepository;
 
@@ -14,24 +17,28 @@ public class EstudianteService {
     @Inject
     private EstudianteRepository estudianteRepository;
 
-    public List<Estudiante> ListarTodos() {
-        System.out.println("ListarTodos en el servicio");
-        return this.estudianteRepository.listAll();
+    public List<EstudianteRepresentation> ListarTodos() {
+        List<EstudianteRepresentation> estu = new ArrayList<>();
+        for (Estudiante est : this.estudianteRepository.listAll()) {
+            estu.add(this.mapperToEstudianteRepresentation(est));
+        }
+        return estu;
     }
 
-    public Estudiante consultarPorId(Integer id) {
-        return this.estudianteRepository.findById(id.longValue());
+    public EstudianteRepresentation consultarPorId(Integer id) {
+        return this.mapperToEstudianteRepresentation(this.estudianteRepository.findById(id.longValue()));
     }
+
 
     @Transactional
-    public void crearEstudiante(Estudiante estudiante) {
-        this.estudianteRepository.persist(estudiante);
+    public void crearEstudiante(EstudianteRepresentation estudiante) {
+        this.estudianteRepository.persist(this.mapperToEstudiante(estudiante));
     }
 
     
     @Transactional
-    public void actualizarEstudiante(Integer id, Estudiante estudiante) {
-        Estudiante estuActual = this.consultarPorId(id);
+    public void actualizarEstudiante(Integer id, EstudianteRepresentation estudiante) {
+        Estudiante estuActual = this.mapperToEstudiante(this.consultarPorId(id));
         estuActual.apellido = estudiante.apellido;
         estuActual.nombre = estudiante.nombre;
         estuActual.FechaNacimiento = estudiante.FechaNacimiento;
@@ -40,7 +47,7 @@ public class EstudianteService {
     // SE ACTUALIZA AUTOMATICAMENTE POR DIRTY CHECKING
     @Transactional
     public void actualizarParcialEstudiante(Integer id, Estudiante estudiante) {
-        Estudiante estuActual = this.consultarPorId(id);
+        Estudiante estuActual = this.mapperToEstudiante(this.consultarPorId(id));
         if (estudiante.apellido != null) {
             estuActual.apellido = estudiante.apellido;
         }
@@ -88,6 +95,29 @@ public class EstudianteService {
                 .find("nombre = ?1 and id = ?2 and provincia = ?3", nombre, id.longValue(), provincia).list();
     }
 
+        private Estudiante mapperToEstudiante(EstudianteRepresentation est){
+        Estudiante estu = new Estudiante();
+        estu.id = est.id;
+        estu.nombre = est.nombre;
+        estu.apellido=est.apellido;
+        estu.FechaNacimiento=est.FechaNacimiento;
+        estu.provincia=est.provincia;
+        estu.genero=est.genero;
+
+        return estu;
+    }
+
+    private EstudianteRepresentation mapperToEstudianteRepresentation(Estudiante est){
+        EstudianteRepresentation estu = new EstudianteRepresentation();
+        estu.id = est.id;
+        estu.nombre = est.nombre;
+        estu.apellido=est.apellido;
+        estu.FechaNacimiento=est.FechaNacimiento;
+        estu.provincia=est.provincia;
+        estu.genero=est.genero;
+
+        return estu;
+    }
 
 
 }

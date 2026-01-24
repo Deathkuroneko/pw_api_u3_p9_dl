@@ -3,6 +3,7 @@ package uce.edu.web.api.matricula.interfaces;
 import java.util.List;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
@@ -15,13 +16,18 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import uce.edu.web.api.matricula.aplication.EstudianteService;
+import uce.edu.web.api.matricula.aplication.HijoService;
 import uce.edu.web.api.matricula.domain.Estudiante;
+import uce.edu.web.api.matricula.domain.Hijo;
 
 @Path("/estudiantes")
 public class EstudianteResource {
 
     @Inject
     private EstudianteService estudianteService;
+
+    @Inject
+    private HijoService hijoService;
 
     @GET
     @Path("")
@@ -40,6 +46,8 @@ public class EstudianteResource {
 
     @POST
     @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response guardar(Estudiante estudiante) {
         this.estudianteService.crearEstudiante(estudiante);
         return Response.status(Response.Status.CREATED).entity(estudiante).build();
@@ -54,6 +62,7 @@ public class EstudianteResource {
 
     @PATCH
     @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     public void actualizarParcial(@PathParam("id") Integer id, Estudiante estudiante) {
         this.estudianteService.actualizarParcialEstudiante(id, estudiante);
     }
@@ -76,6 +85,7 @@ public class EstudianteResource {
 
     @GET
     @Path("/buscarPorNombreYApellido")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Estudiante> buscarPorNombreYApellido(
             @QueryParam("nombre") String nombre,
             @QueryParam("apellido") String apellido) {
@@ -84,6 +94,7 @@ public class EstudianteResource {
 
     @GET
     @Path("/provincia/id")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Estudiante> buscarPorNombreEId(
             @QueryParam("nombre") String nombre,
             @QueryParam("id") Integer id) {
@@ -92,6 +103,7 @@ public class EstudianteResource {
 
     @GET
     @Path("/buscarPorNombreGeneroYProvincia")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Estudiante> buscarPorNombreGeneroYProvincia(
             @QueryParam("nombre") String nombre,
             @QueryParam("genero") String genero,
@@ -101,6 +113,7 @@ public class EstudianteResource {
 
     @GET
     @Path("/buscarPorNombreIdYProvincia")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Estudiante> buscarPorNombreIdYProvincia(
             @QueryParam("nombre") String nombre,
             @QueryParam("id") Integer id,
@@ -108,6 +121,11 @@ public class EstudianteResource {
         return estudianteService.buscarPorNombreIdYProvincia(nombre, id, provincia);
     }
 
+    @GET
+    @Path("/{id}/hijos")
+    public List<Hijo> buscarPorIdEstudiante(@PathParam("id") Integer id){
+        return this.hijoService.buscarPorIdEstudiante(id);
+    }
 
 }
 
@@ -171,4 +189,10 @@ Nivel 2:- uso correcto de metodos o verbos HTTP
             application/json: para datos en formato JSON
             application/xml: para datos en formato XML
             text/plain: para datos en formato texto plano
+
+Nivel 3: Tambien conocido como HATEOS, es ineficiente traer siempre todos los hijos del padre, no deberiamos traer todos los datos
+        de una sola peticion, sino atravez de hipervinculos, y en lugar de tener una lista de hijos hay un vinculo a otro endpoint
+        que traera a los hijos de este.
+        Nosotros no debemos exponer directamente las entidades (estudiantes) en el resource
+
 */
