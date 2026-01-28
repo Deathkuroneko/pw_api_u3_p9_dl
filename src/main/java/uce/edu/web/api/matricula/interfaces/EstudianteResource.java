@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import uce.edu.web.api.matricula.aplication.EstudianteService;
 import uce.edu.web.api.matricula.aplication.HijoService;
+import uce.edu.web.api.matricula.aplication.representation.EstudianteRepresentation;
 import uce.edu.web.api.matricula.domain.Estudiante;
 import uce.edu.web.api.matricula.domain.Hijo;
 
@@ -32,7 +33,7 @@ public class EstudianteResource {
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Estudiante> ListarTodos() {
+    public List<EstudianteRepresentation> ListarTodos() {
         return this.estudianteService.ListarTodos();
     }
 
@@ -40,7 +41,7 @@ public class EstudianteResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public Estudiante consultarPorId(@PathParam("id") Integer ids) {
+    public EstudianteRepresentation consultarPorId(@PathParam("id") Integer ids) {
         return this.estudianteService.consultarPorId(ids);
     }
 
@@ -48,14 +49,14 @@ public class EstudianteResource {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response guardar(Estudiante estudiante) {
+    public Response guardar(EstudianteRepresentation estudiante) {
         this.estudianteService.crearEstudiante(estudiante);
         return Response.status(Response.Status.CREATED).entity(estudiante).build();
     }
     
     @PUT
     @Path("/{id}")
-    public Response actualizar(@PathParam("id") Integer id, Estudiante estudiante) {
+    public Response actualizar(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
         this.estudianteService.actualizarEstudiante(id, estudiante);
         return Response.status( 209).entity("Actualizado").build();
     }

@@ -1,9 +1,6 @@
 package uce.edu.web.api.matricula.aplication;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.arjuna.ats.internal.jdbc.drivers.modifiers.list;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
