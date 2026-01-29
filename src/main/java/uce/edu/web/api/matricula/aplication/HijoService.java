@@ -1,9 +1,11 @@
 package uce.edu.web.api.matricula.aplication;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import uce.edu.web.api.matricula.aplication.representation.HijoRepresentation;
 import uce.edu.web.api.matricula.domain.Hijo;
 import uce.edu.web.api.matricula.infraestructura.HijoRepository;
 
@@ -13,9 +15,21 @@ public class HijoService {
     @Inject
     private HijoRepository hijoRepository;
 
-    public List<Hijo> buscarPorIdEstudiante(Integer idEst){
-        return this.hijoRepository.buscarPorIdEstudainte(idEst);
+    public List<HijoRepresentation> buscarPorIdEstudiante(Integer idEst){
+        List<HijoRepresentation>  hr = new ArrayList<>();
+        for (Hijo h : this.hijoRepository.buscarPorIdEstudainte(idEst)) {
+            hr.add(this.mapperTo(h));
+        }
+        return hr;
     }
 
+    private HijoRepresentation mapperTo(Hijo hijo){
+        HijoRepresentation hr = new HijoRepresentation();
+        hr.id = hijo.id;
+        hr.nombre = hijo.apellido;
+        hr.apellido = hijo.apellido;
+
+        return hr;
+    }
     
 }

@@ -1,5 +1,6 @@
 package uce.edu.web.api.matricula.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.inject.Inject;
@@ -13,13 +14,16 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import uce.edu.web.api.matricula.aplication.EstudianteService;
 import uce.edu.web.api.matricula.aplication.HijoService;
 import uce.edu.web.api.matricula.aplication.representation.EstudianteRepresentation;
+import uce.edu.web.api.matricula.aplication.representation.HijoRepresentation;
+import uce.edu.web.api.matricula.aplication.representation.LinkDto;
 import uce.edu.web.api.matricula.domain.Estudiante;
-import uce.edu.web.api.matricula.domain.Hijo;
 
 @Path("/estudiantes")
 public class EstudianteResource {
@@ -30,19 +34,26 @@ public class EstudianteResource {
     @Inject
     private HijoService hijoService;
 
+    @Context
+    private UriInfo uriInfo;
+
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     public List<EstudianteRepresentation> ListarTodos() {
-        return this.estudianteService.ListarTodos();
+        List<EstudianteRepresentation> estu = new ArrayList<>();
+        for (EstudianteRepresentation est : this.estudianteService.ListarTodos()) {
+            estu.add(this.construirLinks(est));
+        }
+        return estu;
     }
 
     /* LUEGO SE USARA EL MODELO DE MADURES DE RICHARSON */
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public EstudianteRepresentation consultarPorId(@PathParam("id") Integer ids) {
-        return this.estudianteService.consultarPorId(ids);
+        return this.construirLinks( this.estudianteService.consultarPorId(ids));
     }
 
     @POST
@@ -124,10 +135,27 @@ public class EstudianteResource {
 
     @GET
     @Path("/{id}/hijos")
-    public List<Hijo> buscarPorIdEstudiante(@PathParam("id") Integer id){
+    public List<HijoRepresentation> buscarPorIdEstudiante(@PathParam("id") Integer id){
         return this.hijoService.buscarPorIdEstudiante(id);
     }
 
+    private EstudianteRepresentation construirLinks(EstudianteRepresentation estr){
+        String self = this.uriInfo.getBaseUriBuilder()
+        .path(EstudianteResource.class)
+        .path(String.valueOf(estr.id))
+        .build()
+        .toString();
+
+        String hijos = this.uriInfo.getBaseUriBuilder()
+        .path(EstudianteResource.class)
+        .path(String.valueOf(estr.id))
+        .path("hijos")
+        .build()
+        .toString();
+
+        estr.links = List.of(new LinkDto(self, "self"),new LinkDto(hijos, "hijosSelf"));
+        return estr;
+    }
 }
 
 /* Supongamos que tenga estudiantes/provincia?genero=M&pichincha=Cuenca 
@@ -196,4 +224,5 @@ Nivel 3: Tambien conocido como HATEOS, es ineficiente traer siempre todos los hi
         que traera a los hijos de este.
         Nosotros no debemos exponer directamente las entidades (estudiantes) en el resource
 
+        La consulta se va hacer mediante un hipervinculo o hipermedia,
 */
