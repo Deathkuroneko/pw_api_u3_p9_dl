@@ -26,7 +26,7 @@ public class HijoService {
     private HijoRepresentation mapperTo(Hijo hijo){
         HijoRepresentation hr = new HijoRepresentation();
         hr.id = hijo.id;
-        hr.nombre = hijo.apellido;
+        hr.nombre = hijo.nombre;
         hr.apellido = hijo.apellido;
 
         return hr;
