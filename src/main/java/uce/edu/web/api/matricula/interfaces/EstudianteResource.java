@@ -3,6 +3,8 @@ package uce.edu.web.api.matricula.interfaces;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -40,6 +42,7 @@ public class EstudianteResource {
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public List<EstudianteRepresentation> ListarTodos() {
         List<EstudianteRepresentation> estu = new ArrayList<>();
         for (EstudianteRepresentation est : this.estudianteService.ListarTodos()) {
@@ -52,6 +55,8 @@ public class EstudianteResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
+    //@PermitAll
     public EstudianteRepresentation consultarPorId(@PathParam("id") Integer ids) {
         return this.construirLinks( this.estudianteService.consultarPorId(ids));
     }
@@ -60,6 +65,7 @@ public class EstudianteResource {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public Response guardar(EstudianteRepresentation estudiante) {
         this.estudianteService.crearEstudiante(estudiante);
         return Response.status(Response.Status.CREATED).entity(estudiante).build();
@@ -67,6 +73,7 @@ public class EstudianteResource {
     
     @PUT
     @Path("/{id}")
+    @RolesAllowed("admin")
     public Response actualizar(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
         this.estudianteService.actualizarEstudiante(id, estudiante);
         return Response.status( 209).entity("Actualizado").build();
@@ -74,6 +81,7 @@ public class EstudianteResource {
 
     @PATCH
     @Path("/{id}")
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public void actualizarParcial(@PathParam("id") Integer id, Estudiante estudiante) {
         this.estudianteService.actualizarParcialEstudiante(id, estudiante);
@@ -81,6 +89,7 @@ public class EstudianteResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("admin")
     public void eliminar(@PathParam("id") Long id) {
         this.estudianteService.deleteEstudiante(id);
     }
@@ -88,6 +97,7 @@ public class EstudianteResource {
     // para buscar usando querys
     @GET
     @Path("/provincia")
+    @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
     //en caso de que haya chocque de path debe colocarse el diferenciador
     //y hay otra variable /provincia/genero y así.
@@ -97,6 +107,7 @@ public class EstudianteResource {
 
     @GET
     @Path("/buscarPorNombreYApellido")
+    @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Estudiante> buscarPorNombreYApellido(
             @QueryParam("nombre") String nombre,
@@ -107,6 +118,7 @@ public class EstudianteResource {
     @GET
     @Path("/provincia/id")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public List<Estudiante> buscarPorNombreEId(
             @QueryParam("nombre") String nombre,
             @QueryParam("id") Integer id) {
@@ -116,6 +128,7 @@ public class EstudianteResource {
     @GET
     @Path("/buscarPorNombreGeneroYProvincia")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public List<Estudiante> buscarPorNombreGeneroYProvincia(
             @QueryParam("nombre") String nombre,
             @QueryParam("genero") String genero,
@@ -126,6 +139,7 @@ public class EstudianteResource {
     @GET
     @Path("/buscarPorNombreIdYProvincia")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public List<Estudiante> buscarPorNombreIdYProvincia(
             @QueryParam("nombre") String nombre,
             @QueryParam("id") Integer id,
@@ -135,6 +149,7 @@ public class EstudianteResource {
 
     @GET
     @Path("/{id}/hijos")
+    @RolesAllowed("admin")
     public List<HijoRepresentation> buscarPorIdEstudiante(@PathParam("id") Integer id){
         return this.hijoService.buscarPorIdEstudiante(id);
     }
