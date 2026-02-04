@@ -31,30 +31,50 @@ public class EstudianteService {
     public void crearEstudiante(EstudianteRepresentation estudiante) {
         this.estudianteRepository.persist(this.mapperToEstudiante(estudiante));
     }
+    
+    @Transactional
+    public void actualizarEstudiante(Integer id, EstudianteRepresentation estudianteDto) {
+        // 1. Buscamos la entidad MANAGED directamente del repositorio
+        Estudiante estuActual = this.estudianteRepository.findById(id.longValue());
+        
+        if (estuActual != null) {
+            // 2. Usamos el nuevo método para actualizar sus campos
+            this.actualizarEntidadDesdeDto(estudianteDto, estuActual);
+            // El Dirty Checking guardará los cambios automáticamente al final del método.
+        }
+    }
 
-    
     @Transactional
-    public void actualizarEstudiante(Integer id, EstudianteRepresentation estudiante) {
-        Estudiante estuActual = this.mapperToEstudiante(this.consultarPorId(id));
-        estuActual.apellido = estudiante.apellido;
-        estuActual.nombre = estudiante.nombre;
-        estuActual.FechaNacimiento = estudiante.FechaNacimiento;
-    }
-    
-    // SE ACTUALIZA AUTOMATICAMENTE POR DIRTY CHECKING
-    @Transactional
-    public void actualizarParcialEstudiante(Integer id, Estudiante estudiante) {
-        Estudiante estuActual = this.mapperToEstudiante(this.consultarPorId(id));
-        if (estudiante.apellido != null) {
-            estuActual.apellido = estudiante.apellido;
-        }
-        if (estudiante.nombre != null) {
-            estuActual.nombre = estudiante.nombre;
-        }
-        if (estudiante.FechaNacimiento != null) {
-            estuActual.FechaNacimiento = estudiante.FechaNacimiento;
+    public void actualizarParcialEstudiante(Integer id, EstudianteRepresentation estudianteDto) {
+        // 1. Buscamos la entidad MANAGED
+        Estudiante estuActual = this.estudianteRepository.findById(id.longValue());
+        
+        if (estuActual != null) {
+            // 2. El método de mapeo ya tiene la lógica de "if != null"
+            this.actualizarEntidadDesdeDto(estudianteDto, estuActual);
         }
     }
+
+        // Este método actualiza la entidad que YA existe en la base de datos
+    private void actualizarEntidadDesdeDto(EstudianteRepresentation dto, Estudiante entidadExistente) {
+        if (dto.nombre != null) {
+            entidadExistente.nombre = dto.nombre;
+        }
+        if (dto.apellido != null) {
+            entidadExistente.apellido = dto.apellido;
+        }
+        if (dto.fechaNacimiento != null) {
+            entidadExistente.fechaNacimiento = dto.fechaNacimiento;
+        }
+        if (dto.provincia != null) {
+            entidadExistente.provincia = dto.provincia;
+        }
+        if (dto.genero != null) {
+            entidadExistente.genero = dto.genero;
+        }
+        // Nota: No mapeamos el ID porque la entidad ya lo tiene y no debe cambiar.
+    }
+
 
     @Transactional
     public void deleteEstudiante(Long id) {
@@ -97,7 +117,7 @@ public class EstudianteService {
         estu.id = est.id;
         estu.nombre = est.nombre;
         estu.apellido=est.apellido;
-        estu.FechaNacimiento=est.FechaNacimiento;
+        estu.fechaNacimiento=est.fechaNacimiento;
         estu.provincia=est.provincia;
         estu.genero=est.genero;
 
@@ -109,7 +129,7 @@ public class EstudianteService {
         estu.id = est.id;
         estu.nombre = est.nombre;
         estu.apellido=est.apellido;
-        estu.FechaNacimiento=est.FechaNacimiento;
+        estu.fechaNacimiento=est.fechaNacimiento;
         estu.provincia=est.provincia;
         estu.genero=est.genero;
 

@@ -11,7 +11,7 @@ class GreetingResourceTest {
     @Test
     void testHelloEndpoint() {
         given()
-          .when().get("/hello")
+          .when().get("/matricula/api/v1.0/hello")
           .then()
              .statusCode(200)
              .body(is("Hello RESTEasy"));

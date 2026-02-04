@@ -43,6 +43,7 @@ public class EstudianteResource {
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
+    //@PermitAll
     public List<EstudianteRepresentation> ListarTodos() {
         List<EstudianteRepresentation> estu = new ArrayList<>();
         for (EstudianteRepresentation est : this.estudianteService.ListarTodos()) {
@@ -66,6 +67,7 @@ public class EstudianteResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
+    //@PermitAll
     public Response guardar(EstudianteRepresentation estudiante) {
         this.estudianteService.crearEstudiante(estudiante);
         return Response.status(Response.Status.CREATED).entity(estudiante).build();
@@ -73,23 +75,26 @@ public class EstudianteResource {
     
     @PUT
     @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
-    public Response actualizar(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
+    //@PermitAll
+    public void actualizar(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
         this.estudianteService.actualizarEstudiante(id, estudiante);
-        return Response.status( 209).entity("Actualizado").build();
     }
 
     @PATCH
     @Path("/{id}")
     @RolesAllowed("admin")
+    //@PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    public void actualizarParcial(@PathParam("id") Integer id, Estudiante estudiante) {
+    public void actualizarParcial(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
         this.estudianteService.actualizarParcialEstudiante(id, estudiante);
     }
 
     @DELETE
     @Path("/{id}")
     @RolesAllowed("admin")
+    //@PermitAll
     public void eliminar(@PathParam("id") Long id) {
         this.estudianteService.deleteEstudiante(id);
     }
@@ -149,7 +154,8 @@ public class EstudianteResource {
 
     @GET
     @Path("/{id}/hijos")
-    @RolesAllowed("admin")
+    //@RolesAllowed("admin")
+    @PermitAll
     public List<HijoRepresentation> buscarPorIdEstudiante(@PathParam("id") Integer id){
         return this.hijoService.buscarPorIdEstudiante(id);
     }
