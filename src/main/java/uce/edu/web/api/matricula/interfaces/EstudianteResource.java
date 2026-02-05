@@ -42,7 +42,7 @@ public class EstudianteResource {
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("admin")
+    @RolesAllowed({"admin", "user", "client"})
     //@PermitAll
     public List<EstudianteRepresentation> ListarTodos() {
         List<EstudianteRepresentation> estu = new ArrayList<>();
